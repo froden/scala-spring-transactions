@@ -1,4 +1,4 @@
-package test2;
+package test;
 
 import javax.annotation.Resource;
 
@@ -14,7 +14,7 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
 @ContextConfiguration("/context.xml")
-public class TransactionTest extends AbstractJUnit4SpringContextTests {
+public class JavaTransactionTest extends AbstractJUnit4SpringContextTests {
 
 	@Resource
 	private MyJavaService service;
