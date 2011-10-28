@@ -10,9 +10,9 @@ import org.springframework.transaction.support.{TransactionCallback, Transaction
 import org.springframework.transaction.{TransactionStatus, PlatformTransactionManager}
 
 @ContextConfiguration(Array("/context.xml"))
-class TransactionTestScala extends AbstractJUnit4SpringContextTests {
+class ScalaTransactionTest extends AbstractJUnit4SpringContextTests {
   @Resource
-  var service: MyServiceScala = _
+  var service: MyScalaService = _
 
   @Test
   def shouldTestTransaction {
@@ -21,7 +21,7 @@ class TransactionTestScala extends AbstractJUnit4SpringContextTests {
 }
 
 @Service
-class MyServiceScala @Autowired() (val tm: PlatformTransactionManager) extends Transactional {
+class MyScalaService @Autowired() (val tm: PlatformTransactionManager) extends Transactional {
 
   def printMessageFromDB() {
     doSomethingBefore()
