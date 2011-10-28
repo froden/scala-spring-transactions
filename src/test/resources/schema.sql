@@ -1,0 +1,1 @@
+create table Frode(navn varchar(255));
