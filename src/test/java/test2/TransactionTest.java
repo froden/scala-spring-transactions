@@ -4,6 +4,8 @@ import javax.annotation.Resource;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -15,29 +17,33 @@ import org.springframework.transaction.support.TransactionTemplate;
 public class TransactionTest extends AbstractJUnit4SpringContextTests {
 
 	@Resource
-	private PlatformTransactionManager tm;
-
-	private TransactionTemplate template;
-
-	@Before
-	public void setUp() {
-		template = new TransactionTemplate(tm);
-	}
+	private MyJavaService service;
 
 	@Test
 	public void shouldTestTransaction() {
-		String melding = template.execute(new TransactionCallback<String>() {
-			@Override
-			public String doInTransaction(final TransactionStatus transactionStatus) {
-				try {
-					return "Frode i transaksjon fra java";
-				} catch (RuntimeException e) {
-					transactionStatus.setRollbackOnly();
-					return null;
-				}
-			}
-		});
-		System.out.println(melding);
+		service.printMessageFromDB();
 	}
 
+    @Service
+    static public class MyJavaService {
+        private final TransactionTemplate template;
+
+        @Autowired
+        public MyJavaService(final PlatformTransactionManager tm) {
+            this.template = new TransactionTemplate(tm);
+        }
+
+        public void printMessageFromDB() {
+            doSomethingBefore();
+            String message = template.execute(new TransactionCallback<String>() {
+                @Override
+                public String doInTransaction(TransactionStatus transactionStatus) {
+                    return "Message from database";
+                }
+		    });
+            System.out.println(message);
+        }
+
+        void doSomethingBefore() {}
+    }
 }

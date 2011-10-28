@@ -25,13 +25,10 @@ class MyScalaService @Autowired() (val tm: PlatformTransactionManager) extends T
 
   def printMessageFromDB() {
     doSomethingBefore()
-    var melding = rollbackOnExceptionTransaction { () =>
-      getMessageFromDB()
-    }
-    println(melding.getOrElse("No message found"))
+    var melding = doInTransaction { _ => "Message from database"}
+    println(melding)
   }
 
-  def getMessageFromDB() = throw new RuntimeException
   def doSomethingBefore() {}
 }
 
@@ -39,23 +36,9 @@ trait Transactional {
   val tm: PlatformTransactionManager
   val template: TransactionTemplate = new TransactionTemplate(tm)
 
-  def rollbackOnExceptionTransaction[T](action: () => T): Option[T] = {
-    return doInTransaction {
-      transactionStatus =>
-        try {
-          return Some(action())
-        } catch {
-          case e: RuntimeException => {
-            transactionStatus.setRollbackOnly
-            None
-          }
-        }
-    }
-  }
-
-  def doInTransaction[T](action: (TransactionStatus) => Option[T]): Option[T] = {
-    return template.execute(new TransactionCallback[Option[T]] {
-      override def doInTransaction(transactionStatus: TransactionStatus): Option[T] = {
+  def doInTransaction[T](action: (TransactionStatus) => T): T = {
+    return template.execute(new TransactionCallback[T] {
+      override def doInTransaction(transactionStatus: TransactionStatus): T = {
         return action(transactionStatus)
       }
     })
