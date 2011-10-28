@@ -1,8 +1,7 @@
-package test2;
+package test;
 
 import javax.annotation.Resource;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,10 +13,10 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
 @ContextConfiguration("/context.xml")
-public class TransactionTest extends AbstractJUnit4SpringContextTests {
+public class TransactionTestJava extends AbstractJUnit4SpringContextTests {
 
 	@Resource
-	private MyJavaService service;
+	private MyServiceJava service;
 
 	@Test
 	public void shouldTestTransaction() {
@@ -25,11 +24,11 @@ public class TransactionTest extends AbstractJUnit4SpringContextTests {
 	}
 
     @Service
-    static public class MyJavaService {
+    static public class MyServiceJava {
         private final TransactionTemplate template;
 
         @Autowired
-        public MyJavaService(final PlatformTransactionManager tm) {
+        public MyServiceJava(final PlatformTransactionManager tm) {
             this.template = new TransactionTemplate(tm);
         }
 
