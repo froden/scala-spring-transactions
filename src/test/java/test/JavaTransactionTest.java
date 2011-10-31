@@ -2,7 +2,6 @@ package test;
 
 import javax.annotation.Resource;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,26 +23,26 @@ public class JavaTransactionTest extends AbstractJUnit4SpringContextTests {
 		service.printMessageFromDB();
 	}
 
-    @Service
-    static public class MyJavaService {
-        private final TransactionTemplate template;
+	@Service
+	static public class MyJavaService {
+		private final TransactionTemplate template;
 
-        @Autowired
-        public MyJavaService(final PlatformTransactionManager tm) {
-            this.template = new TransactionTemplate(tm);
-        }
+		@Autowired
+		public MyJavaService(final PlatformTransactionManager tm) {
+			template = new TransactionTemplate(tm);
+		}
 
-        public void printMessageFromDB() {
-            doSomethingBefore();
-            String message = template.execute(new TransactionCallback<String>() {
-                @Override
-                public String doInTransaction(TransactionStatus transactionStatus) {
-                    return "Message from database";
-                }
-		    });
-            System.out.println(message);
-        }
+		public void printMessageFromDB() {
+			doSomethingBefore();
+			String message = template.execute(new TransactionCallback<String>() {
+				@Override
+				public String doInTransaction(final TransactionStatus transactionStatus) {
+					return DB.getMessage();
+				}
+			});
+			System.out.println(message);
+		}
 
-        void doSomethingBefore() {}
-    }
+		void doSomethingBefore() {}
+	}
 }

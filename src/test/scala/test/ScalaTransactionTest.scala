@@ -25,7 +25,7 @@ class MyScalaService @Autowired() (val tm: PlatformTransactionManager) extends T
 
   def printMessageFromDB() {
     doSomethingBefore()
-    val message = doInTransaction { _ => "Message from database" }
+    val message = doInTransaction { _ => DB.getMessage }
     println(message)
   }
 
