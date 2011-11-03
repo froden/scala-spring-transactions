@@ -1,1 +1,1 @@
-create table Frode(navn varchar(255));
+create table messages(message varchar(255));
